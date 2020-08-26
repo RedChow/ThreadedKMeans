@@ -138,12 +138,12 @@ The csv was taken from: https://www.analyticsvidhya.com/blog/2019/08/comprehensi
 """
 import csv
 with open('path/to/csv') as csv_file:
-	csv_reader = csv.reader(csv_file, delimiter=',')
-	line_count = 0
-	for row in csv_reader:
-		if line_count != 0:
-			points.append([float(row[6]), float(row[8])])
-		line_count += 1
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    line_count = 0
+    for row in csv_reader:
+        if line_count != 0:
+            points.append([float(row[6]), float(row[8])])
+        line_count += 1
 #Takes less than 0.06s on average to finish
 kmeans = KMeans(3, 20, 0.001)
 kmeans.get_clusters()
