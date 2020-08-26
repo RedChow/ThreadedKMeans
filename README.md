@@ -62,8 +62,15 @@ The number of threads in the program is not dependent on the number of clusters 
 </p>
 
 <p>
-One thing to note is that each thread is accessing the global list points. This might be causing
-some sychronization across the threads and may cause added overhead.
+One thing to note is that each thread is accessing the global list points. This might cause
+some sychronization across the threads and may add unintended overhead.
 Another option would be to pass a copy of the points to each thread. But this has the drawback of 
 taking more memory. 
+</p>
+
+<p>
+In thinking about the previous paragraph, version 2 creates a global list of points that is partitioned into sublists for each thread. 
+This cuts the run time in half. So, the first version definitely has some synchronization across accessing a global variable. For version 2, 
+The number of threads that makes the biggest difference in run time is 12. On another system the number of threads will more than likely be different. 
+When adding more threads, the run time actually starts increasing. But, using less threads also increases run time.
 </p>
