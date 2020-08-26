@@ -135,7 +135,7 @@ to perform k-means clustering.
 The csv was taken from: https://www.analyticsvidhya.com/blog/2019/08/comprehensive-guide-k-means-clustering/
 """
 import csv
-with open('path/to/csv') as csv_file:
+with open('./clustering.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     for row in csv_reader:
