@@ -7,127 +7,127 @@ import math
 
 
 class KMeansError(Exception):
-	pass
+    pass
 
 
 class ComputeDistances(Thread):
-	def __init__(self, thread_number, point_partitions, centroids):
-		Thread.__init__(self)
-		self.centroids = centroids
-		self.thread_number = thread_number
-		self.point_partitions = point_partitions
-		self.thread_clusters = [[] for i in range(len(centroids))]
-		self.am_i_still_running = True
+    def __init__(self, thread_number, point_partitions, centroids):
+        Thread.__init__(self)
+        self.centroids = centroids
+        self.thread_number = thread_number
+        self.point_partitions = point_partitions
+        self.thread_clusters = [[] for i in range(len(centroids))]
+        self.am_i_still_running = True
 		
-	def run(self):
-		self.get_distances()
-		self.am_i_still_running = False
+    def run(self):
+        self.get_distances()
+        self.am_i_still_running = False
 		
-	def get_distances(self):
-		start = self.thread_number*self.point_partitions
-		end = start + self.point_partitions
-		if end > len(points):
-			end = len(points)
-		for i in range(start, end):
-			#get the first distance
-			d_0 = self.distance(points[i], self.centroids[0])
-			min_j = 0
-			#iterate over the remaining centroids to find which the point belongs
-			for j, c in enumerate(self.centroids[1:], 1):
-				d = self.distance(points[i], c)
-				if d < d_0:
-					d_0 = d
-					min_j = j 
-			self.thread_clusters[min_j].append(points[i])
+    def get_distances(self):
+        start = self.thread_number*self.point_partitions
+        end = start + self.point_partitions
+        if end > len(points):
+            end = len(points)
+        for i in range(start, end):
+            #get the first distance
+            d_0 = self.distance(points[i], self.centroids[0])
+            min_j = 0
+            #iterate over the remaining centroids to find which the point belongs
+            for j, c in enumerate(self.centroids[1:], 1):
+                d = self.distance(points[i], c)
+                if d < d_0:
+                    d_0 = d
+                    min_j = j 
+            self.thread_clusters[min_j].append(points[i])
 	
-	def am_i_alive(self):
-		return self.am_i_still_running
+    def am_i_alive(self):
+        return self.am_i_still_running
 			
-	def distance(self, p, c):
-		#define your own distance function here
-		#The line below would be used for 1-dimensional data
-		#return abs(p-c)
-		return math.sqrt( (p[0]-c[0])**2 + (p[1]-c[1])**2)
+    def distance(self, p, c):
+        #define your own distance function here
+        #The line below would be used for 1-dimensional data
+        #return abs(p-c)
+        return math.sqrt( (p[0]-c[0])**2 + (p[1]-c[1])**2)
 
-	def kill(self):
-		self.EXIT = True
+    def kill(self):
+        self.EXIT = True
 		
 		
 class KMeans:
-	def __init__(self, number_of_clusters, max_iter, tolerance, number_of_threads=-1):
-		self.number_of_clusters = number_of_clusters
-		self.max_iterations = max_iter
-		self.tolerance = tolerance
-		self.centroids = []
-		self.new_centroids = []
-		self.clusters = [[] for i in range(number_of_clusters)]
-		self.number_of_threads = number_of_threads
-		if number_of_threads <= 0:
-			self.number_of_threads = number_of_clusters
+    def __init__(self, number_of_clusters, max_iter, tolerance, number_of_threads=-1):
+        self.number_of_clusters = number_of_clusters
+        self.max_iterations = max_iter
+        self.tolerance = tolerance
+        self.centroids = []
+        self.new_centroids = []
+        self.clusters = [[] for i in range(number_of_clusters)]
+        self.number_of_threads = number_of_threads
+        if number_of_threads <= 0:
+            self.number_of_threads = number_of_clusters
 		
-	def initialize_centroids(self):
-		"""
-        	This uses the random sample method; it would be easy to change what happens in this method. Just
-            make sure that self.centroids is set
+    def initialize_centroids(self):
         """
-		if self.number_of_clusters < len(points):
-			self.centroids = random.sample(points, self.number_of_clusters)
-		else:
-			raise KMeansError
+        This uses the random sample method; it would be easy to change what happens in this method. Just
+        make sure that self.centroids is set
+        """
+        if self.number_of_clusters < len(points):
+            self.centroids = random.sample(points, self.number_of_clusters)
+        else:
+            raise KMeansError
 			
-	def calculate_centroid(self, cluster):
-		#The following three lines make sense when working with 1-dimensional data
-		#if len(cluster) > 0:
-		#	return sum(cluster)/len(cluster)
-		#return 0
-		if len(cluster) > 0:
-			sum_x = sum(x[0] for x in cluster)
-			sum_y = sum(x[1] for x in cluster)
-			return (sum_x/float(len(cluster)), sum_y/float(len(cluster)))
-		return 0
+    def calculate_centroid(self, cluster):
+        #The following three lines make sense when working with 1-dimensional data
+        #if len(cluster) > 0:
+        #	return sum(cluster)/len(cluster)
+        #return 0
+        if len(cluster) > 0:
+            sum_x = sum(x[0] for x in cluster)
+            sum_y = sum(x[1] for x in cluster)
+            return (sum_x/float(len(cluster)), sum_y/float(len(cluster)))
+        return 0
 		
-	def get_error(self, old_centroid, new_centroid):
-		#The line below would be used for 1-dimensional data
-		#return abs(old_centroid - new_centroid)
-		return math.sqrt( (old_centroid[0] - new_centroid[0])**2 + (old_centroid[1] - new_centroid[1])**2)
+    def get_error(self, old_centroid, new_centroid):
+        #The line below would be used for 1-dimensional data
+        #return abs(old_centroid - new_centroid)
+        return math.sqrt( (old_centroid[0] - new_centroid[0])**2 + (old_centroid[1] - new_centroid[1])**2)
 		
-	def get_clusters(self):
-		self.initialize_centroids()
-		self.new_centroids = self.centroids[:]
-		point_partitions = int(round(float(len(points))/float(self.number_of_threads)))
-		for i in range(self.max_iterations):
-			#make a new list for all the threads
-			threads = []
-			#make new clusters
-			self.clusters = [[] for i in range(self.number_of_clusters)]
-			for i in range(self.number_of_threads):
-				cd = ComputeDistances(i, point_partitions, self.centroids)
-				cd.start()
-				threads.append(cd)
-				#We keep looping until all the threads have finished.
-				#We really should error check in the ComputeDistances class; or we could
-				#set a time for computations and then kill the threads if time limit exceeded.
-				#Use the cd.kill() to exit the thread and then raise an error.
-				#Also note that we could use while any([t.is_alive() for t in threads]), however,
-				#sometimes between the time it takes to start a thread and checking if it is alive
-				#is too fast. I.e., it will give a False before it's even started and the code
-				#will advance thinking that the thread has already computed what it needed.
-			while any([t.am_i_alive() for t in threads]):
-				pass
-			#Once all the threads have finished, join the clusters together.
-			for t in threads:
-				for i, cluster in enumerate(t.thread_clusters):
-					self.clusters[i] = self.clusters[i] + t.thread_clusters[i]
-			errors = []
-			#With the new clusters, calculate new centroids and get errors.
-			for i, cluster in enumerate(self.clusters):
-				self.new_centroids[i] = self.calculate_centroid(cluster)
-				errors.append(self.get_error(self.centroids[i], self.new_centroids[i]))
-				self.centroids[i] = self.new_centroids[i]
-			#If the maximum error is less than our tolerance, we have our solution.
-			if max(errors) < self.tolerance:
-				return self.clusters
-		return self.clusters
+    def get_clusters(self):
+        self.initialize_centroids()
+        self.new_centroids = self.centroids[:]
+        point_partitions = int(round(float(len(points))/float(self.number_of_threads)))
+        for i in range(self.max_iterations):
+            #make a new list for all the threads
+            threads = []
+            #make new clusters
+            self.clusters = [[] for i in range(self.number_of_clusters)]
+            for i in range(self.number_of_threads):
+                cd = ComputeDistances(i, point_partitions, self.centroids)
+                cd.start()
+                threads.append(cd)
+            #We keep looping until all the threads have finished.
+            #We really should error check in the ComputeDistances class; or we could
+            #set a time for computations and then kill the threads if time limit exceeded.
+            #Use the cd.kill() to exit the thread and then raise an error.
+            #Also note that we could use while any([t.is_alive() for t in threads]), however,
+            #sometimes between the time it takes to start a thread and checking if it is alive
+            #is too fast. I.e., it will give a False before it's even started and the code
+            #will advance thinking that the thread has already computed what it needed.
+            while any([t.am_i_alive() for t in threads]):
+                pass
+            #Once all the threads have finished, join the clusters together.
+            for t in threads:
+                for i, cluster in enumerate(t.thread_clusters):
+                    self.clusters[i] = self.clusters[i] + t.thread_clusters[i]
+            errors = []
+            #With the new clusters, calculate new centroids and get errors.
+            for i, cluster in enumerate(self.clusters):
+                self.new_centroids[i] = self.calculate_centroid(cluster)
+                errors.append(self.get_error(self.centroids[i], self.new_centroids[i]))
+                self.centroids[i] = self.new_centroids[i]
+            #If the maximum error is less than our tolerance, we have our solution.
+            if max(errors) < self.tolerance:
+                return self.clusters
+        return self.clusters
 			
 
 points = []
