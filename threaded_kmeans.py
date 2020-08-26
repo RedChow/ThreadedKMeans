@@ -1,6 +1,4 @@
 from threading import Thread
-import threading
-import re
 import time
 import random
 import math
