@@ -3,6 +3,7 @@ import time
 import random
 import math
 
+start_time = time.time()
 
 class KMeansError(Exception):
     pass
@@ -146,4 +147,5 @@ with open('./clustering.csv') as csv_file:
 kmeans = KMeans(3, 20, 0.001)
 kmeans.get_clusters()
 print(kmeans.centroids)
-
+end_time = time.time()
+print(end_time - start_time)

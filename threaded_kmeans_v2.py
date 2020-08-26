@@ -13,11 +13,10 @@ class KMeansError(Exception):
 
 
 class ComputeDistances(Thread):
-    def __init__(self, thread_number, point_partitions, centroids, t_points):
+    def __init__(self, thread_number, centroids, t_points):
         Thread.__init__(self)
         self.centroids = centroids
         self.thread_number = thread_number
-        self.point_partitions = point_partitions
         self.thread_clusters = [[] for i in range(len(centroids))]
         self.am_i_still_running = True
         self.t_points = t_points
@@ -27,11 +26,6 @@ class ComputeDistances(Thread):
         self.am_i_still_running = False
 		
     def get_distances(self):
-        #start = self.thread_number*self.point_partitions
-        #end = start + self.point_partitions
-        #if end > len(points):
-        #    end = len(points)
-        #for i in range(start, end):
         for point in self.t_points:
             #get the first distance
             d_0 = self.distance(point, self.centroids[0])
@@ -101,14 +95,13 @@ class KMeans:
     def get_clusters(self):
         self.initialize_centroids()
         self.new_centroids = self.centroids[:]
-        point_partitions = int(round(float(len(points))/float(self.number_of_threads)))
         for i in range(self.max_iterations):
             #make a new list for all the threads
             threads = []
             #make new clusters
             self.clusters = [[] for i in range(self.number_of_clusters)]
             for i in range(self.number_of_threads):
-                cd = ComputeDistances(i, point_partitions, self.centroids, point_list[i])
+                cd = ComputeDistances(i, self.centroids, point_list[i])
                 cd.start()
                 threads.append(cd)
             #We keep looping until all the threads have finished.
@@ -137,7 +130,6 @@ class KMeans:
         return self.clusters
 			
 
-points = []
 """
 It is not necessary to open a CSV; this is done as an example for getting points
 to perform k-means clustering.
