@@ -1,7 +1,8 @@
 <h1>Threaded KMeans - Jython</h1>
 <h2>Introduction</h2>
-[Jython](https://www.jython.org) is the Java implementation of Python. One advantage of Jython over CPython is
-the lack of the [Global Interpreter Lock](https://wiki.python.org/moin/GlobalInterpreterLock) (GIL) and thus can fully
+<a href="https://www.jython.org">Jython</a> is the Java implementation of Python. One advantage of Jython over CPython is
+
+the lack of the <a href="https://wiki.python.org/moin/GlobalInterpreterLock">Global Interpreter Lock</a> (GIL) and thus can fully
 exploit multiprocessor systems. Threading in Jython is super easy, just follow the steps:
 <ol>
 	<li>Import the Thread module from threading</li>
