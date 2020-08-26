@@ -60,3 +60,10 @@ I wish I had a fail-safe way of getting the magic number of threads needed to ma
 Trial and error seems to work best, as it will differ (often wildly) between systems. (I've used anywhere between 4 and 50 threads.)
 The number of threads in the program is not dependent on the number of clusters desired.
 </p>
+
+<p>
+One thing to note is that each thread is accessing the global list points. This might be causing
+some sychronization across the threads and may cause added overhead.
+Another option would be to pass a copy of the points to each thread. But this has the drawback of 
+taking more memory. 
+</p>
