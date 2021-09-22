@@ -143,7 +143,7 @@ with open('./clustering.csv') as csv_file:
         if line_count != 0:
             points.append([float(row[6]), float(row[8])])
         line_count += 1
-#Takes less than 0.06s on average to finish
+#Takes less than 0.12s on average to finish
 kmeans = KMeans(3, 20, 0.001)
 kmeans.get_clusters()
 print(kmeans.centroids)
