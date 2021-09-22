@@ -74,3 +74,8 @@ This cuts the run time in half. So, the first version definitely has some synchr
 The number of threads that makes the biggest difference in run time is 12. On another system the number of threads will more than likely be different. 
 When adding more threads, the run time actually starts increasing. But, using less threads also increases run time.
 </p>
+
+<h2>Updated Metrics</h2>
+<p>
+The first version runs a bit slower than v2. Increasing threads to 40 for v2 gets the time to under .012 seconds, while increasing to 80 gets under .009s. Thus adding more threads after a certain point only speeds up the process by a small amount. We also run into problems with partitioning the data into more sets. Should probably add better error checking in the ComputeDistances class.
+</p>
