@@ -147,7 +147,7 @@ with open('./clustering.csv') as csv_file:
             point_list[point_count].append([float(row[6]), float(row[8])])
             point_count = (point_count + 1) % number_of_threads
         line_count += 1
-#Takes less than 0.06s on average to finish
+#Takes less than 0.024s on average to finish
 kmeans = KMeans(3, 20, 0.001)
 kmeans.get_clusters()
 print(kmeans.centroids)
